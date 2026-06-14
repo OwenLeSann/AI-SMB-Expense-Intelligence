@@ -161,6 +161,7 @@ def quarter_of(iso_date: str) -> str:
 # Database schema --
 SCHEMA = """
 DROP VIEW  IF EXISTS v_transactions;
+DROP TABLE IF EXISTS pre_approvals;
 DROP TABLE IF EXISTS violation_transactions;
 DROP TABLE IF EXISTS violations;
 DROP TABLE IF EXISTS transactions;
@@ -210,16 +211,29 @@ CREATE TABLE transactions (
     employee_id     INTEGER NOT NULL REFERENCES employees(id)
 );
 CREATE TABLE violations (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    employee_id INTEGER REFERENCES employees(id),
-    rule        TEXT NOT NULL,
-    detail      TEXT,
-    severity    INTEGER NOT NULL             -- 1 low .. 5 high
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id     INTEGER REFERENCES employees(id),
+    rule            TEXT NOT NULL,
+    detail          TEXT,
+    severity        INTEGER NOT NULL,        -- 1 low .. 5 high
+    status          TEXT NOT NULL DEFAULT 'open',  -- 'open' | 'resolved' | 'dismissed'
+    resolution_note TEXT
 );
 CREATE TABLE violation_transactions (
     violation_id INTEGER NOT NULL REFERENCES violations(id),
     txn_id       INTEGER NOT NULL REFERENCES transactions(id),
     PRIMARY KEY (violation_id, txn_id)
+);
+CREATE TABLE pre_approvals (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id  INTEGER NOT NULL REFERENCES employees(id),
+    requested_at TEXT NOT NULL,              -- ISO datetime (UTC)
+    merchant     TEXT NOT NULL,
+    amount_cad   REAL NOT NULL,
+    mcc          INTEGER REFERENCES mcc_codes(mcc),
+    decision     TEXT NOT NULL DEFAULT 'pending',  -- 'pending' | 'approved' | 'denied'
+    reason       TEXT,
+    decided_at   TEXT                        -- ISO datetime; NULL while pending
 );
 
 CREATE INDEX idx_txn_date ON transactions(txn_date);
