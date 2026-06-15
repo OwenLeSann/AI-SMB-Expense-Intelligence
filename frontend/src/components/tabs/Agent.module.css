@@ -28,8 +28,8 @@
   width: 28px;
   height: 28px;
   border-radius: var(--radius-md);
-  background: oklch(0.975 0.018 330);
-  border: 1px solid oklch(0.930 0.030 330);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,8 +76,8 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-lg);
-  background: oklch(0.975 0.018 330);
-  border: 1px solid oklch(0.930 0.030 330);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,8 +137,8 @@
   width: 26px;
   height: 26px;
   border-radius: var(--radius-md);
-  background: oklch(0.975 0.018 330);
-  border: 1px solid oklch(0.930 0.030 330);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,7 +155,7 @@
 }
 
 .bodyUser {
-  background: oklch(0.520 0.155 330);
+  background: var(--color-primary);
   color: #fff;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg) var(--radius-sm) var(--radius-lg) var(--radius-lg);
@@ -215,7 +215,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-4);
   resize: none;
-  overflow-y: hidden;
+  overflow-y: auto;
   line-height: 1.5;
   min-height: 44px;
   max-height: 180px;
@@ -244,7 +244,7 @@
   transition: background var(--dur-fast), transform var(--dur-fast), opacity var(--dur-fast);
 }
 .sendBtn:hover:not(:disabled) {
-  background: oklch(0.460 0.155 330);
+  background: var(--color-primary-hover);
 }
 .sendBtn:active:not(:disabled) {
   transform: scale(0.96);

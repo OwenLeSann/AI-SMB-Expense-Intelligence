@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Bot, Send, Trash2 } from 'lucide-react'
 import { sendMessage, clearSession } from '../../api'
 import Chart from '../Chart'
@@ -14,7 +14,8 @@ const SUGGESTIONS = [
 ]
 
 export default function Agent() {
-  const sessionId = useRef(crypto.randomUUID()).current
+  const sessionId     = useRef(crypto.randomUUID()).current
+  const prefersReduced = useReducedMotion()
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [text, setText]         = useState('')
   const [loading, setLoading]   = useState(false)
@@ -23,8 +24,9 @@ export default function Agent() {
   const messagesRef             = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: messages.length > 1 ? 'smooth' : 'instant' })
-  }, [messages, loading])
+    const behavior = (messages.length > 1 && !prefersReduced) ? 'smooth' : 'instant'
+    bottomRef.current?.scrollIntoView({ behavior })
+  }, [messages, loading, prefersReduced])
 
   async function handleSend(content: string) {
     const trimmed = content.trim()
@@ -106,16 +108,16 @@ export default function Agent() {
       </div>
 
       {/* ── Messages ────────────────────────────── */}
-      <div className={styles.messages} ref={messagesRef}>
+      <div className={styles.messages} ref={messagesRef} aria-live="polite" aria-atomic="false">
         <div className={styles.spacer} />
 
         {/* Empty state */}
         {isEmpty && (
           <motion.div
             className={styles.emptyState}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: prefersReduced ? 0 : 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+            transition={{ duration: prefersReduced ? 0.15 : 0.3, ease: [0.25, 1, 0.5, 1] }}
           >
             <div className={styles.emptyIcon} aria-hidden>
               <Bot size={26} />
@@ -139,8 +141,8 @@ export default function Agent() {
 
         {/* Message list */}
         <AnimatePresence initial={false}>
-          {messages.map((msg, i) => (
-            <MessageBubble key={i} message={msg} />
+          {messages.map((msg) => (
+            <MessageBubble key={msg.id} message={msg} />
           ))}
         </AnimatePresence>
 
@@ -148,7 +150,7 @@ export default function Agent() {
         {loading && (
           <motion.div
             className={`${styles.bubble} ${styles.bubbleAssistant}`}
-            initial={{ opacity: 0, y: 6 }}
+            initial={{ opacity: 0, y: prefersReduced ? 0 : 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
@@ -195,12 +197,13 @@ export default function Agent() {
 /* ── MessageBubble ──────────────────────────────── */
 
 function MessageBubble({ message }: { message: ChatMessage }) {
-  const isUser = message.role === 'user'
+  const isUser         = message.role === 'user'
+  const prefersReduced = useReducedMotion()
 
   return (
     <motion.div
       className={`${styles.bubble} ${isUser ? styles.bubbleUser : styles.bubbleAssistant}`}
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: prefersReduced ? 0 : 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
     >
