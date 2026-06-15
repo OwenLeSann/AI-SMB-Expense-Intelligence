@@ -254,6 +254,51 @@
   cursor: not-allowed;
 }
 
+/* ── Markdown body (assistant bubbles) ───────────── */
+.mdPara {
+  font-size: var(--text-label);
+  line-height: 1.6;
+  color: var(--color-ink);
+  max-width: 65ch;
+  text-wrap: pretty;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  max-width: 100%;
+}
+
+.mdTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.mdTable th {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  font-weight: 600;
+  font-size: var(--text-micro);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 2px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.mdTable td {
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-ink);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.mdTable tbody tr:last-child td { border-bottom: none; }
+
+.mdTable tbody tr:nth-child(even) td { background: var(--color-surface); }
+
 /* ── Reduced motion ──────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .messages { scroll-behavior: auto; }

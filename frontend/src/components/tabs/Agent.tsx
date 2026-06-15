@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Bot, Send, Trash2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { sendMessage, clearSession } from '../../api'
 import Chart from '../Chart'
 import type { ChatMessage } from '../../types'
@@ -215,7 +217,27 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
       <div className={`${styles.bubbleBody} ${isUser ? styles.bodyUser : styles.bodyAssistant}`}>
         {message.text && (
-          <p className={styles.bubbleText}>{message.text}</p>
+          isUser ? (
+            <p className={styles.bubbleText}>{message.text}</p>
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p({ children }) {
+                  return <p className={styles.mdPara}>{children}</p>
+                },
+                table({ children }) {
+                  return (
+                    <div className={styles.tableWrap}>
+                      <table className={styles.mdTable}>{children}</table>
+                    </div>
+                  )
+                },
+              }}
+            >
+              {message.text}
+            </ReactMarkdown>
+          )
         )}
         {message.chart && (
           <div className={styles.chartWrap}>
