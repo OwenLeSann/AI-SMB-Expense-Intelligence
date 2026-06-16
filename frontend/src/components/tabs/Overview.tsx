@@ -49,6 +49,7 @@ export default function Overview({ onTabChange }: Props) {
   const [budgetLoading, setBudgetLoading] = useState(false)
   const [error, setError]               = useState(false)
   const [barsReady, setBarsReady]       = useState(false)
+  const [chartDone, setChartDone]       = useState(false)
 
   const listVariants = prefersReduced
     ? { hidden: {}, visible: {} }
@@ -156,8 +157,10 @@ export default function Overview({ onTabChange }: Props) {
               dataKey="spend"
               fill={CHART_ACCENT}
               radius={[3, 3, 0, 0]}
+              isAnimationActive={!chartDone}
               animationDuration={prefersReduced ? 0 : 700}
               animationEasing="ease-out"
+              onAnimationEnd={() => setChartDone(true)}
             />
           </BarChart>
         </ResponsiveContainer>

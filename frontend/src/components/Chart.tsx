@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   BarChart, Bar,
   LineChart, Line,
@@ -50,6 +51,8 @@ interface Props {
 
 export default function Chart({ spec, height = 260 }: Props) {
   const data = pivot(spec)
+  const [animated, setAnimated] = useState(false)
+  const done = () => setAnimated(true)
 
   if (spec.type === 'pie') {
     const slices = spec.series[0]?.points.map((p) => ({ name: p.x, value: p.y })) ?? []
@@ -67,8 +70,10 @@ export default function Chart({ spec, height = 260 }: Props) {
               cx="50%"
               cy="50%"
               outerRadius={height / 2 - 20}
+              isAnimationActive={!animated}
               animationDuration={600}
               animationEasing="ease-out"
+              onAnimationEnd={done}
             >
               {slices.map((_, i) => (
                 <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -140,8 +145,10 @@ export default function Chart({ spec, height = 260 }: Props) {
                 stroke={COLORS[i % COLORS.length]}
                 strokeWidth={2}
                 dot={false}
+                isAnimationActive={!animated}
                 animationDuration={600}
                 animationEasing="ease-out"
+                onAnimationEnd={done}
               />
             ))}
           </LineChart>
@@ -169,8 +176,10 @@ export default function Chart({ spec, height = 260 }: Props) {
               dataKey={s.name}
               fill={COLORS[i % COLORS.length]}
               radius={[3, 3, 0, 0]}
+              isAnimationActive={!animated}
               animationDuration={600}
               animationEasing="ease-out"
+              onAnimationEnd={done}
             />
           ))}
         </BarChart>
