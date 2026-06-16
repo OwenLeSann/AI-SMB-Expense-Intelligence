@@ -93,6 +93,14 @@ export default function Overview({ onTabChange }: Props) {
       })
   }, [quarter])
 
+  const chartData = useMemo(
+    () => summary?.monthly_spend.map((m) => ({
+      month: m.month.replace(/^20/, "'"),
+      spend: m.total,
+    })) ?? [],
+    [summary?.monthly_spend],
+  )
+
   if (loading) return <Skeleton />
   if (error) return (
     <div className={styles.root}>
@@ -102,14 +110,6 @@ export default function Overview({ onTabChange }: Props) {
     </div>
   )
   if (!summary) return null
-
-  const chartData = useMemo(
-    () => summary.monthly_spend.map((m) => ({
-      month: m.month.replace(/^20/, "'"),
-      spend: m.total,
-    })),
-    [summary.monthly_spend],
-  )
 
   const totalSpend = summary.monthly_spend.reduce((acc: number, m: { total: number }) => acc + m.total, 0)
   const recent     = violations.slice(0, 5)
